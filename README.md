@@ -5,9 +5,10 @@ To make HTTP requests oniOS9 using Ionic2, following lines needs to be added in 
 
 Look for platforms/ios/{project_name}/{project_name}-Info.plist file and edit it -
 
-Add the following lines in the main <dict> element
-
+Add the following lines in the main ```<dict>``` element
+```
 <dict>
       <key>NSAllowsArbitraryLoads</key>
       <true/>
 </dict>
+```
