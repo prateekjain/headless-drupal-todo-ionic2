@@ -1,47 +1,35 @@
 import {Page} from 'ionic/ionic';
-import {ToDoService} from '../services/todolistservice';
+import {TodoService} from '../services/todolistservice';
 
 
 @Page({
     templateUrl: 'build/pages/todolist/todolist.html'
-    providers: [ToDoService]
+    providers: [TodoService]
 })
-export class ToDoList {
+export class TodoList {
 
 
-    constructor(toDoService:ToDoService) {
-        this.toDoService = toDoService;
-        this.csrfToken = '';
-        this.items = [];
+    constructor(todoService:TodoService) {
+        this.todoService = todoService;
+        this.todos = [];
         this.loading = false;
 
-        this.toDoService.getCSRF().subscribe(
-            data => {
-
-            this.csrfToken = data._body;
-
-    },
-        err => console.log(err),
-            () => {
-            this.toDoService.setAuthHeader(this.csrfToken);
-            this.getTasks()
-        }
-    );
+        this.getTodos();
 
     }
 
-    getTasks() {
+    getTodos() {
 
         this.loading = true;
-        this.toDoService.getToDo().subscribe(
+        this.todoService.getToDo().subscribe(
             data => {
-            this.items = [];
-        for (let task of data) {
+            this.todos = [];
+        for (let todoItem of data) {
             // changing the response according to our need
-            this.items.push({
-                itemId: task.nid,
-                text: task.title,
-                completed: task.field_status === 'True',
+            this.todos.push({
+                todoId: todoItem.nid,
+                text: todoItem.title,
+                completed: todoItem.field_status === 'True',
                 editMode: false
             });
         }
@@ -56,72 +44,71 @@ export class ToDoList {
     );
     }
 
-    addItem() {
+    addTodo() {
 
-        if (this.newItem) {
-            //this.push = {title: this.newItem, completed: false};
-            // creating a task in the back end
+        if (this.newTodo) {
+            // creating a todo in the back end
             this.loading = true;
-            this.toDoService.createTask(this.newItem).subscribe(
+            this.todoService.createTodo(this.newTodo).subscribe(
                 data => {
                 this.loading = false;
-            this.getTasks();
+            this.getTodos();
         },
             err => console.log(err)
         );
         }
 
-        this.newItem = '';
+        this.newTodo = '';
     }
-    toggle(item) {
-        var index = this.items.indexOf(item);
-        this.items[index].completed = !this.items[index].completed;
-        this.itemUpdated(this.items[index]);
+    toggle(todo) {
+        var index = this.todos.indexOf(todo);
+        this.todos[index].completed = !this.todos[index].completed;
+        this.todoUpdated(this.todos[index]);
     }
 
-    removeItem(item) {
+    removeTodo(todo) {
 
-        var index = this.items.indexOf(item);
+        var index = this.todos.indexOf(todo);
 
 
         this.loading = true;
-        // now deleting the task from our back-end
-        this.toDoService.deleteTask(this.items[index].itemId).subscribe(
+        // now deleting the todo from our back-end
+        this.todoService.deleteTodo(this.todos[index].todoId).subscribe(
             data => {
             this.loading = false;
-        this.items.splice(index, 1);
+        this.todos.splice(index, 1);
     },
         err => console.log(err),
 
     );
 
     }
-    enterEditMode(element: HTMLInputElement, item) {
-        var index = this.items.indexOf(item);
-        this.items[index].editMode = true;
-        if (this.items[index].editMode) {
+    enterEditMode(element: HTMLInputElement, todo) {
+        var index = this.todos.indexOf(todo);
+        this.todos[index].editMode = true;
+        if (this.todos[index].editMode) {
             setTimeout(() => { element.focus(); }, 0);
         }
     }
-    cancelEdit(element: HTMLInputElement, item) {
-        var index = this.items.indexOf(item);
-        this.items[index].editMode = false;
-        element.value = this.items[index].text;
+    cancelEdit(element: HTMLInputElement, todo) {
+        var index = this.todos.indexOf(todo);
+        this.todos[index].editMode = false;
+        element.value = this.todos[index].text;
     }
 
-    commitEdit(updatedText: string, item) {
+    commitEdit(updatedText: string, todo) {
 
-        var index = this.items.indexOf(item);
-        this.items[index].editMode = false;
-        this.items[index].text = updatedText;
-        this.itemUpdated(this.items[index]);
+        var index = this.todos.indexOf(todo);
+        this.todos[index].editMode = false;
+        this.todos[index].text = updatedText;
+        this.todoUpdated(this.todos[index]);
     }
 
-    itemUpdated(item) {
+    todoUpdated(todo) {
         // update the node here
-        if (item.itemId) {
-            // creating a task in the back end
-            this.toDoService.updateTask(item).subscribe(
+        if (todo.todoId) {
+            // updating a todo in the back end
+            this.todoService.updateTodo(todo).subscribe(
                 data => {
                 this.loading = false;
         },

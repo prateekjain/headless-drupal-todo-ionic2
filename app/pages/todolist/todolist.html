@@ -8,25 +8,24 @@
     <header class="header">
       <h1>todos</h1>
       <input class="new-todo" placeholder="What needs to be done?" autofocus
-             [(ngModel)]="newItem" (keyup.enter)="addItem()">
-      <button class="add" (click)="addItem()">Add</button>
+             [(ngModel)]="newTodo" (keyup.enter)="addTodo()">
+      <button class="add" (click)="addTodo()">Add</button>
     </header>
 
     <section class="main">
       <div class="loading" *ngIf="loading">Hang on...</div>
       <ul class="todo-list">
-        <li *ngFor="#item of items" [class.editing]="item.editMode" [class.completed]="item.completed">
+        <li *ngFor="#todo of todos" [class.editing]="todo.editMode" [class.completed]="todo.completed">
           <div class="view">
-            <ion-checkbox class="toggle" type="checkbox" (click)="toggle(item)" [checked]="item.completed"></ion-checkbox>
-            <!--<input class="toggle" type="checkbox" (click)="toggle(item)" [checked]="item.completed">-->
-            <label (click)="enterEditMode(todoItemInput, item)">{{item.text}}</label>
-            <button (click)="removeItem(item)" class="destroy"></button>
+            <ion-checkbox class="toggle" type="checkbox" (click)="toggle(todo)" [checked]="todo.completed"></ion-checkbox>
+            <label (click)="enterEditMode(todoInput, todo)">{{todo.text}}</label>
+            <button (click)="removeTodo(todo)" class="destroy"></button>
           </div>
-          <input class="edit" [value]="item.text"
-                 #todoItemInput
-                 (keyup.enter)="commitEdit(todoItemInput.value, item)"
-                 (keyup.escape)="cancelEdit(todoItemInput, item)"
-                 (blur)="commitEdit(todoItemInput.value, item)">
+          <input class="edit" [value]="todo.text"
+                 #todoInput
+                 (keyup.enter)="commitEdit(todoInput.value, todo)"
+                 (keyup.escape)="cancelEdit(todoInput, todo)"
+                 (blur)="commitEdit(todoInput.value, todo)">
         </li>
       </ul>
     </section>

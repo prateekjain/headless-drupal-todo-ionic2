@@ -1,48 +1,59 @@
+/**
+ * @file
+ * Provides integration with REST webservices
+ *
+ */
+
 import { Inject } from 'angular2/core';
 import { Http, Headers } from 'angular2/http';
 import 'rxjs/add/operator/map';
 
-export class ToDoService {
+/**
+ * Class which can be used to call web services
+ */
+export class TodoService {
 
     constructor(@Inject(Http) http: Http) {
-        this.http = http;
-        this.rootURL = "http://d8.local";
-        this.username = "rob";
-        this.password = "rob";
+    this.http = http;
+    //this.rootURL = "http://d8.local";
+    this.rootUrl = "dev-headless-training.pantheon.io";
+    this.username = "rob";
+    this.password = "rob";
 
-    }
+}
+/**
+ * Helper function to set the authentication header
+ */
+setAuthHeader() {
 
-    getCSRF() {
-        console.log("getting CSRF");
-        return this.http.get(this.rootURL + "/rest/session/token").map(res => res);
-    }
+    var string = this.username + ':' + this.password;
 
-    setAuthHeader(csrfToken) {
+    // encode the String
+    var encodedString = 'Basic ' + btoa(string);
 
-        var string = this.username + ':' + this.password;
+    var authHeader = new Headers();
+    authHeader.append('Content-Type', "application/json");
+    authHeader.append('Authorization', encodedString);
 
-        // encode the String
-        var encodedString = 'Basic ' + btoa(string);
+    this.authHeader = authHeader;
 
-        var authHeader = new Headers();
-        authHeader.append('Content-Type', "application/json");
-        authHeader.append('X-CSRF-Token', csrfToken);
-        authHeader.append('Authorization', encodedString);
+}
 
-        this.authHeader = authHeader;
+/**
+ * To get the list of all the todos
+ */
+getToDo() {
+    var url = this.rootUrl + '/rest/view/todo/list';
+    return this.http.get(url, {headers: this.authHeader}).map(res => res.json());
+}
 
-    }
-    getToDo(csrfToken) {
-        var url = this.rootURL + '/rest/view/todo/list';
-        var header = new Headers();
-        header.append('Content-Type', "application/json");
-        header.append('X-CSRF-Token', csrfToken);
-        //header.append('Authorization', encodedString);
-        return this.http.get(url, {headers: header}).map(res => res.json());
-    }
-
-createTask(title) {
-    var url = this.rootURL + '/entity/node';
+/**
+ * To create the Todo
+ * @param title
+ *
+ */
+createTodo(title) {
+    var url = this.rootUrl + '/entity/node';
 
     // creating the request body
     var body: Object = {
@@ -54,28 +65,36 @@ createTask(title) {
     return this.http.post(url, JSON.stringify(body), {headers: this.authHeader}).map(res => res);
 }
 
-deleteTask(nid) {
+/**
+ * To delete the todo
+ * @param nid Unique nid of the todo
+ */
+deleteTodo(nid) {
     if (nid) {
 
-        var url = this.rootURL +  '/node/' + nid;
+        var url = this.rootUrl +  '/node/' + nid;
         // creating the request
         return this.http.delete(url, {headers: this.authHeader}).map(res => res);
     }
 }
 
-updateTask(item) {
-    if (item) {
-        var url = this.rootURL +  '/node/' + item.itemId;
+/**
+ * To update the todo
+ * @param todo Todo object
+ */
+updateTodo(todo) {
+    if (todo) {
+        var url = this.rootUrl +  '/node/' + todo.todoId;
 
         // creating an correct integer value for complete field
         var completed = 0;
-        if (item.completed) {
+        if (todo.completed) {
             completed = 1;
         }
         // creating the request body
         var body: Object = {
             'type': [{'target_id': 'todo'}],
-            'title': [{'value': item.text}],
+            'title': [{'value': todo.text}],
             'field_status': [{'value': completed}]
         };
 

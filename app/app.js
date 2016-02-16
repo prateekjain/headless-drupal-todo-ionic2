@@ -1,14 +1,14 @@
 import {App, Platform} from 'ionic/ionic';
-import {ToDoList} from './pages/todolist/todolist';
+import {TodoList} from './pages/todolist/todolist';
 
 
 @App({
   template: '<ion-nav [root]="rootPage"></ion-nav>',
   config: {} // http://ionicframework.com/docs/v2/api/config/Config/
 })
-export class MyApp {
+export class MyApp
   constructor(platform: Platform) {
-    this.rootPage = ToDoList;
+    this.rootPage = TodoList;
 
     platform.ready().then(() => {
       // The platform is now ready. Note: if this callback fails to fire, follow
