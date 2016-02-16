@@ -19,7 +19,7 @@
           <div class="view">
             <ion-checkbox class="toggle" type="checkbox" (click)="toggle(todo)" [checked]="todo.completed"></ion-checkbox>
             <label (click)="enterEditMode(todoInput, todo)">{{todo.text}}</label>
-            <button (click)="removeTodo(todo)" class="destroy"></button>
+            <button (click)="removeTodo(todo)" class="destroy">x</button>
           </div>
           <input class="edit" [value]="todo.text"
                  #todoInput

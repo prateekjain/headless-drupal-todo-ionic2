@@ -130,9 +130,10 @@ li.completed label {
   right: 10px;
   bottom: 0;
   width: 40px;
+  content: 'x';
   //height: 40px;
-  margin: -18px 18px;
-  font-size: 30px;
+  margin: 0px 18px;
+  font-size: 20px;
   color: #cc9a9a;
   margin-bottom: 11px;
   transition: color 0.2s ease-out;
@@ -141,10 +142,6 @@ li.completed label {
 }
 .destroy:hover {
   color: #af5b5e;
-}
-
-.destroy:after {
-  content: '×';
 }
 
 .toggle {
