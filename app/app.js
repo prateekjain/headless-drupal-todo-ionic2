@@ -6,7 +6,7 @@ import {TodoList} from './pages/todolist/todolist';
   template: '<ion-nav [root]="rootPage"></ion-nav>',
   config: {} // http://ionicframework.com/docs/v2/api/config/Config/
 })
-export class MyApp
+export class MyApp {
   constructor(platform: Platform) {
     this.rootPage = TodoList;
 

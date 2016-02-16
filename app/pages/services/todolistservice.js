@@ -16,9 +16,10 @@ export class TodoService {
     constructor(@Inject(Http) http: Http) {
     this.http = http;
     //this.rootURL = "http://d8.local";
-    this.rootUrl = "dev-headless-training.pantheon.io";
-    this.username = "rob";
-    this.password = "rob";
+    this.rootUrl = "http://dev-headless-training.pantheon.io";
+    this.username = "dummy";
+    this.password = "dummy";
+    this.setAuthHeader();
 
 }
 /**
@@ -43,7 +44,7 @@ setAuthHeader() {
  * To get the list of all the todos
  */
 getToDo() {
-    var url = this.rootUrl + '/rest/view/todo/list';
+    var url = this.rootUrl + '/rest/views/todo/list';
     return this.http.get(url, {headers: this.authHeader}).map(res => res.json());
 }
 
@@ -56,7 +57,7 @@ createTodo(title) {
     var url = this.rootUrl + '/entity/node';
 
     // creating the request body
-    var body: Object = {
+    var body = {
         'type': [{'target_id': 'todo'}],
         'title': [{'value': title}],
     };
@@ -92,10 +93,10 @@ updateTodo(todo) {
             completed = 1;
         }
         // creating the request body
-        var body: Object = {
+        var body = {
             'type': [{'target_id': 'todo'}],
             'title': [{'value': todo.text}],
-            'field_status': [{'value': completed}]
+            'field_complete': [{'value': completed}]
         };
 
         // creating the request

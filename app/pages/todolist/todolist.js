@@ -1,14 +1,26 @@
+/**
+ * Component class for Todo
+ */
 import {Page} from 'ionic/ionic';
 import {TodoService} from '../services/todolistservice';
 
-
+/**
+ * Page Component in Ionic
+ */
 @Page({
     templateUrl: 'build/pages/todolist/todolist.html'
     providers: [TodoService]
 })
+
+/**
+ * Class TodoList
+ */
 export class TodoList {
 
-
+    /**
+     * Constructor for initializing variables
+     * @param todoService
+     */
     constructor(todoService:TodoService) {
         this.todoService = todoService;
         this.todos = [];
@@ -18,6 +30,9 @@ export class TodoList {
 
     }
 
+    /**
+     * To get all the todos
+     */
     getTodos() {
 
         this.loading = true;
@@ -29,13 +44,14 @@ export class TodoList {
             this.todos.push({
                 todoId: todoItem.nid,
                 text: todoItem.title,
-                completed: todoItem.field_status === 'True',
+                completed: todoItem.field_complete === '1',
                 editMode: false
             });
         }
 
 
     },
+        //If error comes, this will be called
         err => console.log(err),
             () => {
             // remove the loading message
@@ -44,6 +60,9 @@ export class TodoList {
     );
     }
 
+    /**
+     * To add a todo
+     */
     addTodo() {
 
         if (this.newTodo) {
@@ -60,12 +79,21 @@ export class TodoList {
 
         this.newTodo = '';
     }
+
+    /**
+     * To mark a todo as done or not done
+     * @param todo
+     */
     toggle(todo) {
         var index = this.todos.indexOf(todo);
         this.todos[index].completed = !this.todos[index].completed;
         this.todoUpdated(this.todos[index]);
     }
 
+    /**
+     * To delete a todo
+     * @param todo
+     */
     removeTodo(todo) {
 
         var index = this.todos.indexOf(todo);
@@ -83,6 +111,12 @@ export class TodoList {
     );
 
     }
+
+    /**
+     * Changes the todo UI element to input box
+     * @param element
+     * @param todo
+     */
     enterEditMode(element: HTMLInputElement, todo) {
         var index = this.todos.indexOf(todo);
         this.todos[index].editMode = true;
@@ -90,12 +124,23 @@ export class TodoList {
             setTimeout(() => { element.focus(); }, 0);
         }
     }
+
+    /**
+     * Cancels the edit mode of todo
+     * @param element
+     * @param todo
+     */
     cancelEdit(element: HTMLInputElement, todo) {
         var index = this.todos.indexOf(todo);
         this.todos[index].editMode = false;
         element.value = this.todos[index].text;
     }
 
+    /**
+     * Called to confirm the todo is edited
+     * @param updatedText
+     * @param todo
+     */
     commitEdit(updatedText: string, todo) {
 
         var index = this.todos.indexOf(todo);
@@ -104,6 +149,10 @@ export class TodoList {
         this.todoUpdated(this.todos[index]);
     }
 
+    /**
+     * Updates the todo at the backend
+     * @param todo
+     */
     todoUpdated(todo) {
         // update the node here
         if (todo.todoId) {
