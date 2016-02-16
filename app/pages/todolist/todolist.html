@@ -1,0 +1,34 @@
+<ion-content class="home">
+  <section class="todoapp">
+    <header>
+
+    </header>
+  </section>
+  <section class="todoapp">
+    <header class="header">
+      <h1>todos</h1>
+      <input class="new-todo" placeholder="What needs to be done?" autofocus
+             [(ngModel)]="newItem" (keyup.enter)="addItem()">
+      <button class="add" (click)="addItem()">Add</button>
+    </header>
+
+    <section class="main">
+      <div class="loading" *ngIf="loading">Hang on...</div>
+      <ul class="todo-list">
+        <li *ngFor="#item of items" [class.editing]="item.editMode" [class.completed]="item.completed">
+          <div class="view">
+            <ion-checkbox class="toggle" type="checkbox" (click)="toggle(item)" [checked]="item.completed"></ion-checkbox>
+            <!--<input class="toggle" type="checkbox" (click)="toggle(item)" [checked]="item.completed">-->
+            <label (click)="enterEditMode(todoItemInput, item)">{{item.text}}</label>
+            <button (click)="removeItem(item)" class="destroy"></button>
+          </div>
+          <input class="edit" [value]="item.text"
+                 #todoItemInput
+                 (keyup.enter)="commitEdit(todoItemInput.value, item)"
+                 (keyup.escape)="cancelEdit(todoItemInput, item)"
+                 (blur)="commitEdit(todoItemInput.value, item)">
+        </li>
+      </ul>
+    </section>
+  </section>
+</ion-content>
