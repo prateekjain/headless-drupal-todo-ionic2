@@ -15,17 +15,30 @@ export class TodoService {
 
     constructor(@Inject(Http) http: Http) {
     this.http = http;
+    //Base URL of the Drupal backend
     //this.rootURL = "http://d8.local";
-    this.rootUrl = "http://dev-headless-training.pantheon.io";
+    //this.rootUrl = "http://dev-headless-training.pantheon.io";
+    this.rootUrl = "http://headlesstraining.local";
+
+    //Configurable username and password
+    //A screen can be created for asking user to enter the credentials
     this.username = "dummy";
     this.password = "dummy";
-    this.setAuthHeader();
 
 }
 /**
- * Helper function to set the authentication header
+ * Get CSRF Token
  */
-setAuthHeader() {
+
+getCSRF() {
+    return this.http.get(this.rootUrl + "/rest/session/token").map(res => res);
+}
+
+/**
+ * Helper function to set the authentication header
+ * @param csrfToken CSRF Token to make the http requests
+ */
+setAuthHeader(csrfToken) {
 
     var string = this.username + ':' + this.password;
 
@@ -35,6 +48,7 @@ setAuthHeader() {
     var authHeader = new Headers();
     authHeader.append('Content-Type', "application/json");
     authHeader.append('Authorization', encodedString);
+    authHeader.append('X-CSRF-Token', csrfToken);
 
     this.authHeader = authHeader;
 

@@ -25,7 +25,21 @@ export class TodoList {
         this.todoService = todoService;
         this.todos = [];
         this.loading = false;
+        this.csrfToken = '';
 
+        this.todoService.getCSRF().subscribe(
+            data => {
+                this.csrfToken = data._body;
+            },
+            err => {
+                console.log(err);
+            },
+            () => {
+                this.todoService.setAuthHeader(this.csrfToken);
+                this.getTodos();
+            }
+
+        );
         this.getTodos();
 
     }
